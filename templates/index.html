@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Movie Recommender</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <h1>Movie Recommender</h1>
+    
+    <!-- Movie Title Input Form -->
+    <div>
+        <label for="movie-input">Enter a movie name:</label>
+        <input type="text" id="movie-input" placeholder="e.g., The Matrix">
+        <button onclick="getRecommendations()">Get Recommendations</button>
+    </div>
+
+    <h2>Recommendations:</h2>
+    <div id="recommendations-container">
+        <!-- Recommendations will be displayed here -->
+    </div>
+
+    <script>
+        // Get movie recommendations based on the input movie title
+        function getRecommendations() {
+            const movieTitle = document.getElementById('movie-input').value;
+
+            if (!movieTitle) {
+                alert('Please enter a movie title');
+                return;
+            }
+
+            fetch('/recommend', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ movie_title: movieTitle })
+            })
+            .then(response => response.json())
+            .then(data => {
+                const recommendationsContainer = document.getElementById('recommendations-container');
+                recommendationsContainer.innerHTML = '';  // Clear previous recommendations
+
+                if (data.recommendations) {
+                    data.recommendations.forEach(rec => {
+                        const recItem = document.createElement('div');
+                        recItem.innerHTML = `<strong>${rec.title}</strong><br>Similarity Score: ${rec.similarity_score}<br>Rating: ${rec.average_rating} (based on ${rec.rating_count} reviews)<br><br>`;
+                        recommendationsContainer.appendChild(recItem);
+                    });
+                } else {
+                    recommendationsContainer.innerHTML = '<p>No recommendations found.</p>';
+                }
+            })
+            .catch(error => {
+                console.error('Error fetching recommendations:', error);
+            });
+        }
+    </script>
+</body>
+</html>
