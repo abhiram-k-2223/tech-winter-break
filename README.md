@@ -1,1 +1,1 @@
-find the datasets [here]([https://openai.com](https://www.kaggle.com/datasets/parasharmanas/movie-recommendation-system))
+Find the movies and ratings datasets [here](https://www.kaggle.com/datasets/parasharmanas/movie-recommendation-system)
